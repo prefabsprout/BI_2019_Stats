@@ -1,0 +1,36 @@
+# Задание №1
+
+Определим взаимосвязь длины головы и обхват живота у опоссумов.
+Посчитаем корреляцию Пирсона:
+
+```{r}
+library(DAAG)
+head(possum)
+cor(possum$hdlngth, possum$belly, method = 'pearson')
+plot(possum$hdlngth, possum$belly)
+```
+
+Корреляция Пирсона меньше 1. Таким образом, мы можем сделать вывод об умеренной взаимосвязи переменных.
+Предположение подтверждает распределение точек на скатерплоте.
+
+# Задание №2
+
+Посчитаем среднее отношение длины головы к общей длине туловища.
+
+```{r}
+library(dplyr)
+relat_possum <- possum %>% mutate(rel = hdlngth/taill) 
+
+relat_possum_m_vic <- relat_possum %>% filter(sex == 'm' & Pop == 'Vic')
+relat_possum_f_vic <- relat_possum %>% filter(sex == 'f' & Pop == 'Vic') 
+relat_possum_m_notvic <- relat_possum %>% filter(sex == 'm' & Pop != 'Vic')
+relat_possum_f_notvic <- relat_possum %>% filter(sex == 'f' & Pop != 'Vic') 
+
+mean_possum_m_vic <- mean(relat_possum_m_vic$rel)
+mean_possum_f_vic <- mean(relat_possum_f_vic$rel)
+mean_possum_m_notvic <- mean(relat_possum_m_notvic$rel)
+mean_possum_f_notvic <- mean(relat_possum_f_notvic$rel)
+
+answer <- data.frame(mean_possum_f_notvic, mean_possum_f_vic, mean_possum_m_vic, mean_possum_m_notvic)
+answer
+```
