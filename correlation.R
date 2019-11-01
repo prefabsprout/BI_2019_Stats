@@ -10,7 +10,7 @@ correl <- function(df, method = 'pearson'){
 }
 
 
-## Comparing results of mdf[,2] function to basic package's results
+## Comparing results of my function to basic package's results
 
 test_data <- data.frame(mtcars$mpg, mtcars$hp)
 
