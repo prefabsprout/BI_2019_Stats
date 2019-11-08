@@ -1,0 +1,184 @@
+---
+title: "BI-2019 Statistics Project №1"
+output: 
+  html_document:
+    toc: true 
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+---
+# Считывание данных
+
+```{r}
+all_data = function(path){
+  filenames = list.files(path = path, full.names = TRUE)
+  df = lapply(filenames, 
+                    function(x){read.csv(file = x)})
+  Reduce(function(x,y) {merge(x, y, all = TRUE)}, df)
+}
+whole_data <- all_data('~/Git_Repositories/BI_2019_Stats/Stat_project_1/Data')
+```
+
+
+# Первый взгляд на данные
+
+Для начала, взглянем на структуру данных:
+
+```{r}
+str(whole_data)
+```
+
+Обратим внимание на то, что две переменные, которые должны быть числового типа, являются здесь факторными. Посмотрим на все градации факторов и попробуем, таким образом, найти что-то странное:
+
+```{r}
+unique(whole_data$Rings)
+unique(whole_data$Length)
+unique(whole_data$Sex..1...male..2...female..3...uvenil.)
+
+```
+
+Ого. Мы и впрямь кое-что обнаружили - в переменной Rings кто-то написал nine вместо 9. В переменной length кто-то вместо NA оставил нам весьма печальное сообщение. А в уже действительно факторной переменной, отвечающей за пол, мы нашли довольно странное внесение факторных данных в датасет ("male"  "three" "one").
+
+Исправим найденные нами ошибки:
+
+```{r}
+whole_data$Rings[which(whole_data$Rings == 'nine')] <- 9
+whole_data$Sex..1...male..2...female..3...uvenil.[which(whole_data$Sex..1...male..2...female..3...uvenil. == 'male')] <- 1
+whole_data$Sex..1...male..2...female..3...uvenil.[which(whole_data$Sex..1...male..2...female..3...uvenil. == 'three')] <- 3
+whole_data$Sex..1...male..2...female..3...uvenil.[which(whole_data$Sex..1...male..2...female..3...uvenil. == 'one')] <- 1
+```
+
+Ошибку в length исправим переводом данных в numeric - печальное сообщение автоматически превратится в нужный нам NA:
+
+```{r}
+whole_data$Length <- as.numeric(whole_data$Length)
+```
+
+Rings переводить в numeric не будем - пребывание этой переменной в состоянии фактора нам ещё пригодится по ходу анализа.
+
+А теперь взглянем на наличие NA:
+
+```{r}
+apply(whole_data, MARGIN = 2, function(x) sum(is.na(x)))
+```
+
+Сначала разберёмся с пропусками в графе "пол". Пропуск всего лишь один. Наблюдений относительно много. Потому в данном конкретном случае мы очень вряд ли ухудшим из-за этого результаты нашего анализа:
+
+```{r}
+whole_data <- whole_data[!is.na(whole_data$Sex..1...male..2...female..3...uvenil.), ]
+```
+
+Помимо удаления пропуска, в иных случаях можно было бы воспоьзоваться методами машинного обучения - например, логистической регрессией.
+
+
+Кроме того, имеем море пропущенных переменных числовых. Заменим их на что-нибудь. Но на что?
+Бегло взглянем на наличие выбросов среди данных с помощью вот такого вот скаттерплота на все переменные:
+
+```{r}
+library(ggplot2)
+library(purrr)
+library(tidyr)
+library(dplyr)
+
+whole_data %>%
+  keep(is.numeric) %>% 
+  gather() %>% 
+  ggplot(aes(value, value)) +
+  facet_wrap(~ key, scales = "free") +
+  geom_point()
+```
+
+Увидим, что в некоторых переменных есть довольно ощутимые выбросы, которые довольно серьёзно могут исказть среднее. Потому лучшим решением для замены переменной изберём медиану. Заменим же все NA на медианы:
+
+```{r}
+for(i in 1:ncol(whole_data)){
+  whole_data[is.na(whole_data[,i]), i] <- mean(whole_data[,i], na.rm = TRUE) 
+}
+```
+
+# Среднее значение и стандартное отклонение переменной Length для моллюсков разного пола
+
+Среднее значение:
+
+```{r}
+aggregate(Length ~ Sex..1...male..2...female..3...uvenil., data = whole_data, FUN = 'mean')
+```
+
+Стандартное отклонение:
+
+```{r}
+aggregate(Length ~ Sex..1...male..2...female..3...uvenil., data = whole_data, FUN = 'sd')
+```
+
+# Моллюски, у которых Height не превышает 0.165
+
+```{r}
+nrow(filter(whole_data, Height <= 0.165))/nrow(whole_data)*100
+```
+
+
+# Значения переменной Length, которые выше чем у 92% от всех наблюдений
+
+```{r}
+whole_data$Length[whole_data$Length > quantile(whole_data$Length, 0.93)]
+```
+
+# Z-стандартизация
+
+```{r}
+whole_data$Length_z_scores <- scale(whole_data$Length)
+```
+
+# Сравнение между собой диаметра моллюсков с числом колец 5 и 15
+
+Итак, нам предстоит провести сравнение двух групп. Именно ради этого момента мы не переводили кольца в числовой формат. Сначала узнаем, какой именно тест мы применим для сравнения. Удостоверимся в том, подчиняются ли у нас данные нормальному распределению. С помощью графиков плотностей распределения:
+
+```{r}
+qplot(whole_data[which(whole_data$Rings == 5), 4], geom = 'density')
+qplot(whole_data[which(whole_data$Rings == 15), 4], geom = 'density')
+```
+
+И да, это довольно таки может сойти за колокола Гаусса. Пускай и неидеальные колокола.
+
+Таким образом, мы можем смело использовать T-тест Стьюдента:
+
+
+```{r t_res$p.value}
+library(broom)
+library(knitr)
+t_res <- t.test(Diameter ~ Rings, whole_data[which(whole_data$Rings == 5 | whole_data$Rings == 15), ])
+kable(t(tidy(t_res)), digits = c(3,3,3,3,100,3,3,3))
+```
+
+
+
+
+
+Отлично. Мы нашли статистически значимые различия. Нарисуем к этому ещё картиночку:
+
+```{r}
+ggplot(whole_data[which(whole_data$Rings == 5 | whole_data$Rings == 15), ], aes(Rings, Diameter, color = Rings)) +
+  geom_boxplot(width = 0.5)
+```
+
+# Связь между Diameter и Whole_weight
+
+Выясним, подчиняются ли данные нормальному закону распределения:
+
+```{r}
+qplot(whole_data$Diameter, geom = 'density')
+qplot(whole_data$Whole_weight, geom = 'density')
+```
+
+Данные не подчиняются нормальному закону распределения. Следовательно, необходимо применить корреляцию Спирмена:
+
+```{r}
+cor(whole_data$Whole_weight, whole_data$Diameter, method = 'spearman')
+```
+
+Действительно, мы получили число, указывающее на очень явную корреляцию. Убедимся в этом, построив график:
+
+```{r}
+ggplot(whole_data, aes(Whole_weight, Diameter)) + geom_point()
+```
+
