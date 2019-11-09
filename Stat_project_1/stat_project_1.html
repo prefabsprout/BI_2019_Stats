@@ -1509,25 +1509,10 @@ div.tocify {
 
 <div id="объявление-пакетов" class="section level1">
 <h1><span class="header-section-number">1</span> Объявление пакетов</h1>
-<pre class="r"><code>install.packages('tidyr', repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
-<pre><code>## Installing package into '/home/stephen/R/x86_64-pc-linux-gnu-library/3.2'
-## (as 'lib' is unspecified)</code></pre>
-<pre><code>## 
-## The downloaded source packages are in
-##  '/tmp/Rtmp3xsqoo/downloaded_packages'</code></pre>
-<pre class="r"><code>install.packages('broom', repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
-<pre><code>## Installing package into '/home/stephen/R/x86_64-pc-linux-gnu-library/3.2'
-## (as 'lib' is unspecified)</code></pre>
-<pre><code>## 
-## The downloaded source packages are in
-##  '/tmp/Rtmp3xsqoo/downloaded_packages'</code></pre>
-<pre class="r"><code>install.packages('purrr', repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
-<pre><code>## Installing package into '/home/stephen/R/x86_64-pc-linux-gnu-library/3.2'
-## (as 'lib' is unspecified)</code></pre>
-<pre><code>## 
-## The downloaded source packages are in
-##  '/tmp/Rtmp3xsqoo/downloaded_packages'</code></pre>
-<pre class="r"><code>library(ggplot2)</code></pre>
+<pre class="r"><code>if(!require(purrr)) install.packages(&quot;purrr&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+<pre><code>## Loading required package: purrr</code></pre>
+<pre class="r"><code>if(!require(broom)) install.packages(&quot;broom&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+<pre><code>## Loading required package: broom</code></pre>
 <pre><code>## Warning: replacing previous import by 'rlang:::=' when loading 'dplyr'</code></pre>
 <pre><code>## Warning: replacing previous import by 'rlang::.data' when loading 'dplyr'</code></pre>
 <pre><code>## Warning: replacing previous import by 'rlang::as_label' when loading
@@ -1539,7 +1524,13 @@ div.tocify {
 <pre><code>## Warning: replacing previous import by 'rlang::expr' when loading 'dplyr'</code></pre>
 <pre><code>## Warning: replacing previous import by 'rlang::sym' when loading 'dplyr'</code></pre>
 <pre><code>## Warning: replacing previous import by 'rlang::syms' when loading 'dplyr'</code></pre>
-<pre class="r"><code>library(purrr)
+<pre><code>## Warning: replacing previous import by 'tibble::as_tibble' when loading
+## 'broom'</code></pre>
+<pre><code>## Warning: replacing previous import by 'tibble::tibble' when loading 'broom'</code></pre>
+<pre class="r"><code>if(!require(tidyr)) install.packages(&quot;tidyr&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+<pre><code>## Loading required package: tidyr</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(purrr)
 library(tidyr)
 library(dplyr)</code></pre>
 <pre><code>## 
@@ -1550,11 +1541,8 @@ library(dplyr)</code></pre>
 <pre><code>## The following objects are masked from 'package:base':
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(broom)</code></pre>
-<pre><code>## Warning: replacing previous import by 'tibble::as_tibble' when loading
-## 'broom'</code></pre>
-<pre><code>## Warning: replacing previous import by 'tibble::tibble' when loading 'broom'</code></pre>
-<pre class="r"><code>library(knitr)</code></pre>
+<pre class="r"><code>library(broom)
+library(knitr)</code></pre>
 </div>
 <div id="считывание-данных" class="section level1">
 <h1><span class="header-section-number">2</span> Считывание данных</h1>

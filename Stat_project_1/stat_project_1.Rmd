@@ -11,9 +11,9 @@ output:
 # Объявление пакетов
 
 ```{r}
-install.packages('tidyr', repos = "http://cran.us.r-project.org")
-install.packages('broom', repos = "http://cran.us.r-project.org")
-install.packages('purrr', repos = "http://cran.us.r-project.org")
+if(!require(purrr)) install.packages("purrr",repos = "http://cran.us.r-project.org")
+if(!require(broom)) install.packages("broom",repos = "http://cran.us.r-project.org")
+if(!require(tidyr)) install.packages("tidyr",repos = "http://cran.us.r-project.org")
 
 library(ggplot2)
 library(purrr)
@@ -163,7 +163,7 @@ qplot(whole_data[which(whole_data$Rings == 15), 4], geom = 'density')
 Таким образом, мы можем смело использовать T-тест Стьюдента:
 
 
-```{r t_res$p.value}
+```{r}
 t_res <- t.test(Diameter ~ Rings, whole_data[which(whole_data$Rings == 5 | whole_data$Rings == 15), ])
 kable(t(tidy(t_res)), digits = c(3,3,3,3,100,3,3,3))
 ```
