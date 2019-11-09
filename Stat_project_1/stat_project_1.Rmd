@@ -7,6 +7,23 @@ output:
     toc_float: true
     number_sections: true
 ---
+
+# Объявление пакетов
+
+```{r}
+install.packages('tidyr', repos = "http://cran.us.r-project.org")
+install.packages('broom', repos = "http://cran.us.r-project.org")
+install.packages('purrr', repos = "http://cran.us.r-project.org")
+
+library(ggplot2)
+library(purrr)
+library(tidyr)
+library(dplyr)
+library(broom)
+library(knitr)
+```
+
+
 # Считывание данных
 
 ```{r}
@@ -75,11 +92,6 @@ whole_data <- whole_data[!is.na(whole_data$Sex..1...male..2...female..3...uvenil
 Бегло взглянем на наличие выбросов среди данных с помощью вот такого вот скаттерплота на все переменные:
 
 ```{r}
-library(ggplot2)
-library(purrr)
-library(tidyr)
-library(dplyr)
-
 whole_data %>%
   keep(is.numeric) %>% 
   gather() %>% 
@@ -92,9 +104,17 @@ whole_data %>%
 
 ```{r}
 for(i in 1:ncol(whole_data)){
-  whole_data[is.na(whole_data[,i]), i] <- mean(whole_data[,i], na.rm = TRUE) 
+  whole_data[is.na(whole_data[,i]), i] <- median(whole_data[,i], na.rm = TRUE) 
 }
 ```
+
+Теперь взглянем на summary:
+
+```{r}
+summary(whole_data)
+```
+
+
 
 # Среднее значение и стандартное отклонение переменной Length для моллюсков разного пола
 
@@ -144,8 +164,6 @@ qplot(whole_data[which(whole_data$Rings == 15), 4], geom = 'density')
 
 
 ```{r t_res$p.value}
-library(broom)
-library(knitr)
 t_res <- t.test(Diameter ~ Rings, whole_data[which(whole_data$Rings == 5 | whole_data$Rings == 15), ])
 kable(t(tidy(t_res)), digits = c(3,3,3,3,100,3,3,3))
 ```
