@@ -133,7 +133,6 @@ test_data_fm <- data.frame(
   zn = mean(Boston$zn),
   indus = mean(Boston$indus),
   chas = as.factor(Boston$chas),
-  hb = mean(rock$hb),
   nox = mean(Boston$nox),
   rm = mean(Boston$rm),
   age = mean(Boston$age),

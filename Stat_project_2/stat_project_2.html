@@ -1658,7 +1658,6 @@ gg_resid</code></pre>
   zn = mean(Boston$zn),
   indus = mean(Boston$indus),
   chas = as.factor(Boston$chas),
-  hb = mean(rock$hb),
   nox = mean(Boston$nox),
   rm = mean(Boston$rm),
   age = mean(Boston$age),
@@ -1668,8 +1667,6 @@ gg_resid</code></pre>
   ptratio = mean(Boston$ptratio),
   black = mean(Boston$black)
   )</code></pre>
-<pre><code>## Warning in mean.default(rock$hb): argument is not numeric or logical:
-## returning NA</code></pre>
 <p>Собственно, осуществим предсказания:</p>
 <pre class="r"><code>predictions &lt;- predict(full_model, newdata = test_data_fm,  interval = 'confidence')
 test_data_fm &lt;- cbind(test_data_fm, predictions)</code></pre>
