@@ -2134,7 +2134,7 @@ test_data_10 &lt;- cbind(test_data_10, predictions)</code></pre>
 ## Multiple R-squared:  0.7131, Adjusted R-squared:  0.7079 
 ## F-statistic:   137 on 9 and 496 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Напишем формулу полученной линейной регрессии:</p>
-<p><span class="math display">\[medv = {-1.540*10^{-16}*crim -5.621*10^{-2}*zn + 1.136*10^{-1}*rm + 3.371*10^{-1}*tax - 6.697*10^{-2}*tax - 1.689*10^{-1}*ptratio + 9.784*10^{-2}*black -4.256*10^{-1}*lstat - 2.704*10^{-1}*dis -5.248*10^{-2}*age}\]</span></p>
+<p><span class="math display">\[medv = {-5.621*10^{-16}*crim + 1.136*10^{-2}*zn + 1.136*10^{-1}*rm - 6.697*10^{-1}*tax - 1.689*10^{-1}*ptratio + 9.784*10^{-2}*black -4.256*10^{-1}*lstat - 2.704*10^{-1}*dis -5.248*10^{-2}*age}\]</span></p>
 <p>Построим красивую табличку для статьи:</p>
 <pre class="r"><code>summary(mod_10) %&gt;% xtable() %&gt;% kable %&gt;% kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
