@@ -72,6 +72,12 @@ fit <- aov(BDNF_N ~ class, prot_expr_omited)
 summary(fit)
 ```
 
+```{r}
+ggplot(prot_expr_omited, aes(x = class, y = BDNF_N, fill = class)) +
+    geom_boxplot() 
+```
+
+
 Различия действительно есть.
 Для выявления конкретных различий используем парный Т тест с поправкой Бонферрони:
 
